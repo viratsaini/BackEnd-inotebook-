@@ -1,3 +1,4 @@
+//defining the process of authentication of user.
 const express = require("express");
 const User = require("../Models/User");
 const router = express.Router();

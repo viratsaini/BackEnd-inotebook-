@@ -1,0 +1,1 @@
+for starting the server for vs code write {nodemon .\index.js} in terminal
