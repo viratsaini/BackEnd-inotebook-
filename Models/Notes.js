@@ -3,26 +3,35 @@
 const mongoose = require('mongoose');
 //mongose is a model used for creating schema for display and read data for user. 
 
+const { Schema } = mongoose;
 // defining the schema for notes
 const NotesSchema = new Schema({
+    userid:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    },
     title:{
         type: String,
         required:true
     },
     description:{
         type: String,
-        required:true,
-        
+        required:true   
     },
+   
     tag:{
         type: String,
         default:"general"
     },
+   
     date:{
         type: Date,
         default:Date.now
-    }
+    },
+    
   });
 
 //exporting the notesModule as notes
-module.exports=mongoose.model("notes",NotesSchema);
+
+const Notes=mongoose.model("notes",NotesSchema);
+module.exports=Notes;

@@ -6,7 +6,7 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const scrkey = "viratsaini@9917";
-const fetchuser = require("../middleware/fetchuseer")
+const fetchuser = require("../middleware/fetchuser")
 
 //route 1:create a user: using "/api/auth/createuser". NO login requir =="sign up"
 router.post(
@@ -19,12 +19,11 @@ router.post(
     }),
   ],
 
-  //if there is error return bad request and the errors
   async (req, res) => {
     //check that the given userid password and email are correct according to defined rule and give error if not
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.json({ errors: result.array() });
+      return res.status(400).json({ errors: result.array() });
     }
     //make salt and add salt with password and hash it and make safe password
     const salt = await bcrypt.genSalt(10);
