@@ -52,38 +52,65 @@ router.post(
 router.put("/updatenote/:id", fetchuser, async (req, res) => {
   const { title, description, tag } = req.body;
   //create newnote object
-  const newNote = {};
-  if (title) {
-    newNote.title = title;
-  }
-  if (description) {
-    newNote.description = description;
-  }
-  if (tag) {
-    newNote.tag = tag;
-  }
+  try {
+    const newNote = {};
+    if (title) {
+      newNote.title = title;
+    }
+    if (description) {
+      newNote.description = description;
+    }
+    if (tag) {
+      newNote.tag = tag;
+    }
 
-  //find the note to be updated and update
+    //find the note to be updated and update
 
-  let note = await Notes.findById(req.params.id);
-  if (!note) {
-    return res.status(404).sent("Not found")
-  }
-  // let noteid=awaitzz
-  if(note.userid.toString() !== req.user.id){
-    return res.status(404).send("not allowed")
-  }
+    let note = await Notes.findById(req.params.id);
+    if (!note) {
+      return res.status(404).send("Not found");
+    }
+    // check the note is updating is owned by the user
+    if (note.userid.toString() !== req.user.id) {
+      return res.status(404).send("not allowed");
+    }
 
-  note = await Notes.findByIdAndUpdate(
-    req.params.id,
-    { $set:newNote },
-    { new: true }
-  );
-  res.send({ note });
+    note = await Notes.findByIdAndUpdate(
+      req.params.id,
+      { $set: newNote },
+      { new: true }
+    );
+    res.send({ note });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("some error accurs");
+  }
+});
+
+//route 4: delete  notes .using Delete: /api/notes/deletenote.login requried
+
+router.delete("/deletenote/:id", fetchuser, async (req, res) => {
+  try {
+    //find the note to be deleted and delete
+
+    let note = await Notes.findById(req.params.id);
+    if (!note) {
+      return res.status(404).send("Not found");
+    }
+    // check the note is deleting is owned by the user
+    if (note.userid.toString() !== req.user.id) {
+      return res.status(404).send("not allowed");
+    }
+
+    note = await Notes.findByIdAndDelete(req.params.id);
+    res.send({ Success: "notes Deleted", note: note });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("some error accurs");
+  }
 });
 //exporting the notes module to notes routes
 module.exports = router;
-
 
 // Note=Notes
 //user=userid
